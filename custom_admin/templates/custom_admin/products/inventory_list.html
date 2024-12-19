@@ -1,0 +1,31 @@
+{% extends "custom_admin/base_site.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Inventories</h2>
+    <a href="{% url 'custom_admin:add_inventory' %}" class="btn btn-success mb-3">Add Inventory</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Stock Quantity</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inventory in inventories %}
+            <tr>
+                <td>{{ inventory.product.name }}</td>
+                <td>{{ inventory.stock_quantity }}</td>
+                <td>{{ inventory.last_updated }}</td>
+                <td>
+                    <a href="{% url 'custom_admin:edit_inventory' inventory.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'custom_admin:delete_inventory' inventory.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

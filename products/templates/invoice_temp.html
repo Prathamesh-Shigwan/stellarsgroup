@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .invoice-container { max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; }
+        .header, .footer { text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 15px; }
+        .section h2 { font-size: 18px; }
+        .details, .product-table { width: 100%; border-collapse: collapse; }
+        .details th, .details td, .product-table th, .product-table td { padding: 8px; border: 1px solid #ddd; }
+        .product-table th { background-color: #f8f8f8; }
+        .totals { text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="invoice-container">
+    <div class="header">
+        <h1>CARLTON LONDON ONLINE</h1>
+        <p><strong>LEDER AND VOGUE PRIVATE LIMITED</strong><br>
+        Unit No. 1-6, Building No. B5, RKG Warehouse, Pimplas Village, Bhiwandi<br>
+        MUMBAI, IN, Pin: 421302<br>
+        Phone: 1, GSTIN: 27AADCL2899Q1ZK</p>
+    </div>
+
+    <div class="section">
+        <h2>Order & Invoice Details</h2>
+        <table class="details">
+            <tr>
+                <th>Order No</th>
+                <td>#26070</td>
+                <th>Invoice No</th>
+                <td>26070</td>
+            </tr>
+            <tr>
+                <th>Payment Mode</th>
+                <td>PP</td>
+                <th>Invoice Date</th>
+                <td>2024-10-27 17:16:06</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Billing & Shipping Address</h2>
+        <table class="details">
+            <tr>
+                <th>Billing Address</th>
+                <th>Shipping Address</th>
+            </tr>
+            <tr>
+                <td>
+                    Name: Suman Korishetty<br>
+                    Address: 103 Havelock Road Camp<br>
+                    Zip: 590001<br>
+                    City: Belagavi<br>
+                    State: Karnataka<br>
+                    Phone: +919535997747
+                </td>
+                <td>
+                    Name: Suman Korishetty<br>
+                    Address: 103 Havelock Road Camp<br>
+                    Zip: 590001<br>
+                    City: Belagavi<br>
+                    State: Karnataka<br>
+                    Phone: +919535997747
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Product Details</h2>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Product Code</th>
+                    <th>Description</th>
+                    <th>HSN</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Disc</th>
+                    <th>Taxable Value</th>
+                    <th>CGST</th>
+                    <th>SGST</th>
+                    <th>IGST</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CLE094R BLK</td>
+                    <td>Carlton Black Duffle Bag - Black / One Size</td>
+                    <td>42021290</td>
+                    <td>1</td>
+                    <td>Rs. 1,714</td>
+                    <td>Rs. 0</td>
+                    <td>Rs. 1,714</td>
+                    <td>0%</td>
+                    <td>0%</td>
+                    <td>18%</td>
+                    <td>Rs. 2,023</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section totals">
+        <p>Total Excluding Tax: Rs. 1,714</p>
+        <p>Total Tax: Rs. 309</p>
+        <p><strong>Total Including Tax: Rs. 2,023</strong></p>
+        <p>Add: Shipping Rs. 0</p>
+        <p>Tax on Shipping Rs. 0</p>
+        <h2>Total Order Value: Rs. 2,023</h2>
+    </div>
+
+    <div class="footer">
+        <p><strong>Returns & Exchange:</strong> Returns or exchanges are available for unused, undamaged products with packaging and tags intact within 10 days of delivery. Please initiate returns or exchanges from the 'My Orders' section in the App within 10 days of delivery.</p>
+    </div>
+</div>
+
+</body>
+</html>

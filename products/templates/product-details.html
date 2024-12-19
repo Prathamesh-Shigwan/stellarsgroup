@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    {% block title %}Product Details{% endblock %}
+</head>
+{% block content %}
+
+
+
+        <!-- End Offset Wrapper -->
+        <!-- Start Bradcaump area -->
+        <div class="ht__bradcaump__area bradcaump--2">
+            <div class="google__map">
+                <div class="map-contacts">
+                    <div id="googleMap2"></div>
+                </div>
+            </div>
+            <div class="ht__bradcaump__wrap">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="bradcaump__inner">
+                                <nav class="bradcaump-inner">
+                                  <a class="breadcrumb-item" href="{% url 'home' %}">Home</a>
+                                  <span class="brd-separetor"><i class="zmdi zmdi-chevron-right"></i></span>
+                                  <span class="breadcrumb-item active">Product Details</span>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Bradcaump area -->
+        <!-- Start Product Details Area -->
+
+
+<section class="htc__product__details bg__white ptb--70">
+    <div class="htc__product__details__top">
+        <div class="container">
+            <div class="row">
+                <!-- Product Image Section -->
+                <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+                    <div class="htc__product__details__tab__content">
+                        <div class="product__big__images">
+                            <div class="portfolio-full-image">
+                                <div class="product-images">
+                                    <!-- Main Product Image -->
+                                    <div class="main-image" id="mainImage">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                    </div>
+                                    <!-- Variant Image Section (Initially Hidden) -->
+                                    <div class="main-image" id="variantImage" style="display: none;">
+                                        <img src="" alt="" id="variantMainImage">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Thumbnail Images Slider -->
+                        <div class="product-thumbnails-slider">
+                            <div class="thumbnail-container">
+                                <div class="thumbnails-wrapper horizontal" id="mainProductThumbnails">
+                                    <div class="thumbnail">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }} Thumbnail" onclick="changeMainImage('{{ product.image.url }}')">
+                                    </div>
+                                    {% for extra_image in product.extra_images.all %}
+                                    <div class="thumbnail">
+                                        <img src="{{ extra_image.image.url }}" alt="{{ product.name }} Extra Thumbnail" onclick="changeMainImage('{{ extra_image.image.url }}')">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- Variant Thumbnails (Hidden Initially) -->
+                                <div class="thumbnails-wrapper horizontal" id="variantThumbnails" style="display: none;">
+                                    <div class="thumbnail">
+                                        <img src="{{ product.variants.first.image.url }}" alt="Variant Main Thumbnail" onclick="changeMainImage('{{ product.variants.first.image.url }}', 'variant')">
+                                    </div>
+                                    {% for variant_image in product.variants.first.extra_images.all %}
+                                    <div class="thumbnail">
+                                        <img src="{{ variant_image.image.url }}" alt="Variant Extra Thumbnail" onclick="changeMainImage('{{ variant_image.image.url }}', 'variant')">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details Section -->
+                <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12 smt-40 xmt-40">
+                    <div class="ht__product__dtl">
+                        <!-- Main Product Details -->
+                        <div id="mainProductDetails">
+                            <h2 id="product-name">{{ product.name }}</h2>
+                            <ul class="pro__prize">
+                                <li class="old__prize">₹{{ product.old_price }}</li>
+                                <li>₹{{ product.price }}</li>
+                            </ul>
+                        </div>
+
+                        <!-- Variant Product Details (Initially Hidden) -->
+                        <div id="variantProductDetails" style="display: none;">
+                            <h2 id="variantName"></h2>
+                            <ul class="pro__prize">
+                                <li class="old__prize">₹<span id="variantOldPrice"></span></li>
+                                <li>₹<span id="variantPrice"></span></li>
+                            </ul>
+                        </div>
+
+                        <!-- Color Selection for Variants -->
+                        <div class="sin__desc align--left">
+                            <p><span style="margin-right: 10px;">Color:</span></p>
+                            <ul class="pro__variants" style="display: flex; gap: 10px;">
+                                <li class="variant">
+                                    <a href="#" onclick="showMainProduct()">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50">
+                                    </a>
+                                </li>
+                                {% for variant in product.variants.all %}
+                                <li class="variant">
+                                    <a href="#" onclick="showVariant('{{ variant.id }}', '{{ variant.color }}', '{{ variant.price }}', '{{ variant.old_price }}', '{{ variant.image.url }}')">
+                                        <img src="{{ variant.image.url }}" alt="{{ variant.color }}" width="50" height="50">
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Size and Quantity Selection -->
+                        <div class="sin__desc align--left">
+                            <p><span>Size</span></p>
+                            <select class="select__size">
+                                <option>s</option>
+                                <option>l</option>
+                                <option>xs</option>
+                                <option>xl</option>
+                                <option>m</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <ul class="product__action_2">
+                                <li>
+                                    <div class="product-quantity">
+                                        <div class="cart-plus-minus">
+                                            <input class="cart-plus-minus-box" type="number" name="quantity" value="1" min="1" id="product-quantity">
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="ht__addto__cart">
+                                    <button id="add-to-cart-btn" data-pid="{{ product.pid }}" data-url="{% url 'products:add_to_cart' product.pid %}">
+                                        Add To Cart
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <input type="hidden" id="selectedVariantId" name="selected_variant_id" value="">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Function to show main product images and details
+    function showMainProduct() {
+        document.getElementById('mainImage').style.display = 'block';
+        document.getElementById('variantImage').style.display = 'none';
+        document.getElementById('mainProductDetails').style.display = 'block';
+        document.getElementById('variantProductDetails').style.display = 'none';
+        document.getElementById('mainProductThumbnails').style.display = 'flex';
+        document.getElementById('variantThumbnails').style.display = 'none';
+        document.getElementById('selectedVariantId').value = ''; // Clear variant ID
+    }
+
+    // Function to show variant images and details
+    function showVariant(variantId, color, price, oldPrice, imageUrl) {
+        document.getElementById('mainImage').style.display = 'none';
+        document.getElementById('variantImage').style.display = 'block';
+        document.getElementById('variantMainImage').src = imageUrl;
+        document.getElementById('mainProductDetails').style.display = 'none';
+        document.getElementById('variantProductDetails').style.display = 'block';
+        document.getElementById('variantName').innerText = `Variant - ${color}`;
+        document.getElementById('variantPrice').innerText = price;
+        document.getElementById('variantOldPrice').innerText = oldPrice;
+        document.getElementById('mainProductThumbnails').style.display = 'none';
+        document.getElementById('variantThumbnails').style.display = 'flex';
+        document.getElementById('selectedVariantId').value = variantId; // Set variant ID
+    }
+
+    // Function to change the main displayed image
+    function changeMainImage(imageUrl, type = 'main') {
+        if (type === 'variant') {
+            document.getElementById('variantMainImage').src = imageUrl;
+        } else {
+            document.getElementById('mainImage').querySelector('img').src = imageUrl;
+        }
+    }
+
+    // Add to Cart functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButton = document.getElementById('add-to-cart-btn');
+        addToCartButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            const productId = this.getAttribute('data-pid');
+            const url = this.getAttribute('data-url');
+            const quantity = document.getElementById('product-quantity').value;
+            const selectedVariantId = document.getElementById('selectedVariantId').value;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    variant_id: selectedVariantId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product added to cart. Total items: ' + data.total_items);
+                } else {
+                    alert('Failed to add product to cart: ' + data.error);
+                }
+            })
+            .catch(error => console.error('Error adding product to cart:', error));
+        });
+    });
+</script>
+
+
+<style>
+    /* Main and Variant Image Styling */
+    .main-image {
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .main-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Thumbnail display as horizontal row */
+    .thumbnails-wrapper.horizontal {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    /* General styling for thumbnails */
+    .thumbnail-container {
+        overflow: hidden;
+        width: 80%;
+    }
+
+    .thumbnail {
+        flex: 0 0 auto;
+        cursor: pointer;
+    }
+
+    .thumbnail img {
+        width: 100px;
+        height: auto;
+        display: block;
+    }
+
+    /* Styling for navigation buttons */
+    .thumbnail-nav {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        padding: 5px;
+    }
+
+    .thumbnail-nav.prev {
+        margin-right: 5px;
+    }
+
+    .thumbnail-nav.next {
+        margin-left: 5px;
+    }
+</style>
+
+
+
+        <!-- End Product Details Area -->
+        <!-- Start Product Description -->
+        <section class="htc__produc__decription bg__white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- Start List And Grid View -->
+                        <ul class="pro__details__tab" role="tablist">
+                            <li role="presentation" class="description active"><a href="#description" role="tab" data-toggle="tab">description</a></li>
+                            <li role="presentation" class="review"><a href="#review" role="tab" data-toggle="tab">review</a></li>
+                            <li role="presentation" class="shipping"><a href="#shipping" role="tab" data-toggle="tab">shipping</a></li>
+                        </ul>
+                        <!-- End List And Grid View -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="ht__pro__details__content">
+                            <!-- Start Single Content -->
+                            <div role="tabpanel" id="description" class="pro__single__content tab-pane fade in active">
+                                <div class="pro__tab__content__inner">
+                                <p class="pro__info">{{ product.description }}</p>
+
+                                </div>
+                            </div>
+                            <!-- End Single Content -->
+                            <!-- Start Single Content -->
+                            <div role="tabpanel" id="review" class="pro__single__content tab-pane fade">
+                                <div class="pro__tab__content__inner">
+                                    <p>Formfitting clothing is all about a sweet spot. That elusive place where an item is tight but not clingy, sexy but not cloying, cool but not over the top. Alexandra Alvarez’s label, Alix, hits that mark with its range of comfortable, minimal, and neutral-hued bodysuits.</p>
+                                    <h4 class="ht__pro__title">Description</h4>
+
+                                </div>
+                            </div>
+                            <!-- End Single Content -->
+                            <!-- Start Single Content -->
+
+                            <!-- End Single Content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Product Description -->
+        <!-- Start Product Area -->
+        <section class="htc__product__area pb--70">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="section__title text--left">
+                            <h2 class="title__line title__border">New Arrivals</h2>
+                            <p># Trending This Season</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="product__wrap activation__style--1 owl-carousel owl-theme clearfix">
+                        <!-- Start Single Product -->
+                        {% for p in products %}
+                        <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12">
+                            <div class="product">
+                                <div class="product__thumb">
+                                    <a href="{% url 'products:product_details' %}">
+                                        <!-- Assuming 'image' is an ImageField in your Product model -->
+                                        <img src="{{ p.image.url }}" alt="{{ p.title }}">
+                                    </a>
+                                    <div class="product__offer">
+                                        <span class="new">new</span>
+                                        <!-- Example of showing a discount, adjust as necessary -->
+                                        <span>{{ p.get_percentage| floatformat }}</span>
+                                    </div>
+                                    <div class="product__hover__info">
+                                        <ul class="product__action">
+                                            <li><a href="{% url 'products:wishlist' %}"><i class="icon-heart icons"></i></a></li>
+                                            <li><a href="{% url 'products:cart_view' %}"><i class="icon-handbag icons"></i></a></li>
+                                            <li><a href="#"><i class="icon-shuffle icons"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product__inner">
+                                    <div class="product__details">
+                                        <h2><a href="{% url 'products:product_details'%}">{{ p.title }}</a></h2>
+                                        <ul class="pro__prize">
+                                            <!-- Displaying product price, adjust as needed -->
+                                            <li class="old__prize">&#8377; {{ p.old_price }}</li>
+                                            <li>&#8377; {{ p.price }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!-- End Single Product -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Product Area -->
+        <!-- Start Brand Area -->
+        <div class="htc__brand__area pb--70 bg__white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="ht__brand__inner">
+                            <ul class="brand__list owl-carousel owl-theme clearfix">
+                                <li><a href="#"><img src="{% static 'images/brand/1.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/2.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/3.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/4.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/5.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/1.png' %}" alt="brand images"></a></li>
+                                <li><a href="#"><img src="{% static 'images/brand/2.png' %}" alt="brand images"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Brand Area -->
+        <!-- Start Banner Area -->
+        <div class="htc__banner__area">
+            <ul class="banner__list owl-carousel owl-theme clearfix">
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/1.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/2.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/3.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/4.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/5.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/6.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/1.jpg' %}" alt="banner images"></a></li>
+                <li><a href="{% url 'products:product_details' %}"><img src="{% static 'images/banner/bn-3/2.jpg' %}" alt="banner images"></a></li>
+            </ul>
+        </div>
+        <!-- End Banner Area -->
+        <!-- End Banner Area -->
+
+
+{% endblock %}

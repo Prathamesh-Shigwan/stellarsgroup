@@ -1,0 +1,39 @@
+{% extends "custom_admin/base_site.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Variant Inventories</h2>
+    <a href="{% url 'custom_admin:add_variant_inventory' %}" class="btn btn-success mb-3">Add Variant Inventory</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Variant</th>
+                <th>Product</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Gender</th>
+                <th>Stock Quantity</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variant_inventory in variant_inventories %}
+            <tr>
+                <td>{{ variant_inventory.product_variant.vid }}</td>
+                <td>{{ variant_inventory.product_variant.product.name }}</td>
+                <td>{{ variant_inventory.product_variant.color }}</td>
+                <td>{{ variant_inventory.product_variant.size }}</td>
+                <td>{{ variant_inventory.product_variant.gender }}</td>
+                <td>{{ variant_inventory.stock_quantity }}</td>
+                <td>{{ variant_inventory.last_updated }}</td>
+                <td>
+                    <a href="{% url 'custom_admin:edit_variant_inventory' variant_inventory.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'custom_admin:delete_variant_inventory' variant_inventory.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

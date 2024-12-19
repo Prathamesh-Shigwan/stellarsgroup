@@ -1,0 +1,41 @@
+{% extends "custom_admin/base_site.html" %}
+{% load static %}  <!-- Add this line to load the static tag library -->
+
+{% block content %}
+
+<script type="text/javascript" src="{% static 'tinymce/tinymce.min.js' %}"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'link image code',
+        toolbar: 'undo redo | bold italic | link image | code',
+        height: 500,
+        width: 800
+    });
+</script>
+
+<div class="container mt-4">
+    <h2>Add Blog</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Title</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label for="id_content" class="form-label">Content</label>
+            {{ form.content }}
+        </div>
+        <div class="mb-3">
+            <label for="id_author" class="form-label">Author</label>
+            {{ form.author }}
+        </div>
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Image</label>
+            {{ form.image }}
+        </div>
+        <button type="submit" class="btn btn-success">Add Blog</button>
+        <a href="{% url 'custom_admin:blog_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "custom_admin/base_site.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Orders</h2>
+    <a href="{% url 'custom_admin:add_order' %}" class="btn btn-success mb-3">Add Order</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Payment Method</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ order.get_status_display }}</td>
+                <td>₹{{ order.total }}</td>
+                <td>{{ order.payment_method|default:"N/A" }}</td>
+                <td>{{ order.created_at }}</td>
+                <td>
+                    <a href="{% url 'custom_admin:edit_order' order.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'custom_admin:delete_order' order.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <strong>Order Items:</strong>
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Variant</th>
+                                <th>Image</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>
+                                    {% if item.product_variant %}
+                                        {{ item.product_variant.color }} | {{ item.product_variant.size }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="50" height="50">
+                                    {% else %}
+                                    No Image
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.price }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No items in this order.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No orders available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

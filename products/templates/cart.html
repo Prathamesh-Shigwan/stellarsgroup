@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    {% block title %}Cart{% endblock %}
+</head>
+
+{% block content %}
+<div class="ht__bradcaump__area bradcaump--2">
+    <div class="google__map">
+        <div class="map-contacts">
+            <div id="googleMap2"></div>
+        </div>
+    </div>
+    <div class="ht__bradcaump__wrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="bradcaump__inner">
+                        <nav class="bradcaump-inner">
+                          <a class="breadcrumb-item" href="{% url 'home' %}">Home</a>
+                          <span class="brd-separetor"><i class="zmdi zmdi-chevron-right"></i></span>
+                          <span class="breadcrumb-item active">Cart</span>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cart-main-area ptb--120 bg__white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <form action="#">
+                    <div class="table-content table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="product-thumbnail">Products</th>
+                                    <th class="product-name">Product Name</th>
+                                    <th class="product-price">Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total</th>
+                                    <th class="product-remove">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <!-- Product or Variant Image -->
+                                    <td class="product-thumbnail">
+                                        <a href="#">
+                                            {% if item.product_variant %}
+                                                <img src="{{ item.product_variant.image.url }}" alt="Variant Image" />
+                                            {% else %}
+                                                <img src="{{ item.product.image.url }}" alt="Product Image" />
+                                            {% endif %}
+                                        </a>
+                                    </td>
+
+                                    <!-- Product or Variant Details -->
+                                    <td class="product-name">
+                                        <a href="#">{{ item.product.name }}</a>
+                                        {% if item.product_variant %}
+                                            <p>Color: {{ item.product_variant.color }}</p>
+                                            <p>Size: {{ item.product_variant.size }}</p>
+                                        {% endif %}
+                                        <ul class="pro__prize">
+                                            {% if item.product_variant %}
+                                                <li class="old__prize">&#8377; {{ item.product_variant.old_price|default:item.product.old_price }}</li>
+                                                <li>&#8377; {{ item.product_variant.price }}</li>
+                                            {% else %}
+                                                <li class="old__prize">&#8377; {{ item.product.old_price }}</li>
+                                                <li>&#8377; {{ item.product.price }}</li>
+                                            {% endif %}
+                                        </ul>
+                                    </td>
+
+                                    <!-- Price per Item -->
+                                    <td class="product-price">
+                                        <span class="amount">
+                                            {% if item.product_variant %}
+                                                &#8377; {{ item.product_variant.price }}
+                                            {% else %}
+                                                &#8377; {{ item.product.price }}
+                                            {% endif %}
+                                        </span>
+                                    </td>
+
+                                    <!-- Quantity Input -->
+                                    <td class="product-quantity">
+                                        <input type="number" value="{{ item.quantity }}" name="quantity_{{ item.id }}" class="quantity-input" data-item-id="{{ item.id }}" min="1" max="{% if item.product_variant %}{{ item.product_variant.stock_quantity }}{% else %}{{ item.product.inventory.stock_quantity }}{% endif %}">
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                const quantityInputs = document.querySelectorAll('.quantity-input');
+                                                quantityInputs.forEach(input => {
+                                                    input.addEventListener('change', function() {
+                                                        const itemId = this.dataset.itemId;
+                                                        const newQuantity = parseInt(this.value, 10);
+                                                        updateCartItem(itemId, newQuantity);
+                                                    });
+                                                });
+
+                                                function updateCartItem(itemId, quantity) {
+                                                    fetch(`{% url 'products:update_cart_item' %}`, {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                                        },
+                                                        body: JSON.stringify({ item_id: itemId, quantity: quantity })
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            document.getElementById(`line-total-${itemId}`).innerText = `&#8377; ${data.new_line_total.toFixed(2)}`;
+                                                            updateCartSummary(data.cart_total, data.shipping, data.final_total);
+                                                        } else {
+                                                            alert('Failed to update cart item: ' + data.error);
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error updating cart item:', error);
+                                                        alert('Error updating cart item.');
+                                                    });
+                                                }
+
+                                                function updateCartSummary(cartTotal, shipping, finalTotal) {
+                                                    if (document.getElementById('cart-total'))
+                                                        document.getElementById('cart-total').innerText = `Total: &#8377; ${finalTotal.toFixed(2)}`;
+                                                    if (document.getElementById('cart-subtotal'))
+                                                        document.getElementById('cart-subtotal').innerText = `&#8377; ${cartTotal.toFixed(2)}`;
+                                                    if (document.getElementById('cart-shipping'))
+                                                        document.getElementById('cart-shipping').innerText = `&#8377; ${shipping.toFixed(2)}`;
+                                                }
+                                            });
+                                        </script>
+                                    </td>
+
+                                    <!-- Line Total -->
+                                    <td class="product-subtotal" id="line-total-{{ item.id }}">&#8377; {{ item.line_total }}</td>
+
+                                    <!-- Remove Item -->
+                                    <td class="product-remove">
+                                        <a href="{% url 'products:remove_from_cart' item.id %}"><i class="icon-trash icons"></i></a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6">Your cart is empty</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Success Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Cart Total Section -->
+                    <div class="htc__cart__total">
+                        <h6>Cart Total</h6>
+                        <div class="cart__desk__list">
+                            <ul class="cart__desc">
+                                <li>Sub Total</li>
+                                <li>Shipping Charge</li>
+                                <li id="discount-code">{{ discount }}</li>
+                            </ul>
+                            <ul class="cart__price">
+                                <li id="cart-subtotal">&#8377; {{ total }}</li>
+                                <li id="cart-shipping">&#8377; {{ shipping|default:"0.00" }}</li>
+                                <li id="discount-value"></li>
+                            </ul>
+                        </div>
+                        <div class="cart__total">
+                            <span id="cart-total">Total : &#8377; {{ final_total }}</span>
+                        </div>
+                        <ul class="payment__btn">
+                            <li class="active"><a href="{% url 'products:checkout' %}">Payment</a></li>
+                            <li><a href="{% url 'products:product_grid' %}">Continue Shopping</a></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Sections for Brand Area and Banner -->
+<div class="htc__brand__area pb--70 bg__white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ht__brand__inner">
+                    <ul class="brand__list owl-carousel owl-theme clearfix">
+                        <li><a href="#"><img src="{% static 'images/brand/1.png' %}" alt="brand images"></a></li>
+                        <!-- Add more brand images as needed -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="htc__banner__area">
+    <ul class="banner__list owl-carousel owl-theme clearfix">
+        <li><a href="product-details.html"><img src="{% static 'images/banner/bn-3/1.jpg' %}" alt="banner images"></a></li>
+        <!-- Add more banners as needed -->
+    </ul>
+</div>
+
+{% endblock %}

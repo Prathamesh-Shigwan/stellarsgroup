@@ -1,0 +1,47 @@
+{% extends "custom_admin/base_site.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Variants</h2>
+    <a href="{% url 'custom_admin:add_variant' %}" class="btn btn-success mb-3">Add Product Variant</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Gender</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variant in variants %}
+            <tr>
+                <td>
+                    {% if variant.image %}
+                    <img src="{{ variant.image.url }}" alt="Variant Image" width="50" height="50" style="border-radius: 4px;">
+                    {% else %}
+                    <span>No Image</span>
+                    {% endif %}
+                </td>
+                <td>{{ variant.vid }}</td>
+                <td>{{ variant.product.name }}</td>
+                <td>{{ variant.color }}</td>
+                <td>{{ variant.size }}</td>
+                <td>{{ variant.gender }}</td>
+                <td>{{ variant.stock_quantity }}</td>
+                <td>₹{{ variant.price }}</td>
+                <td>
+                    <a href="{% url 'custom_admin:edit_variant' variant.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'custom_admin:delete_variant' variant.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
